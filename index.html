@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Générateur de MSP</title>
+<meta name="description" content="Prépare une mise en situation professionnelle (MSP) à partir des compétences des référentiels nationaux des sapeurs-pompiers volontaires.">
+<meta name="theme-color" content="#15233B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top no-print">
+  <a class="brand" href="#/nouveau"><span class="logo" aria-hidden="true">MSP</span><span>Générateur de MSP</span></a>
+  <nav>
+    <a href="#/nouveau" data-nav="nouveau">Nouvelle</a>
+    <a href="#/historique" data-nav="historique">Historique</a>
+    <a href="#/reglages" data-nav="reglages">Réglages</a>
+  </nav>
+</header>
+<main id="app" tabindex="-1"><noscript>Cette application a besoin de JavaScript.</noscript></main>
+<div id="toast" class="toast no-print" role="status" aria-live="polite"></div>
+<script src="js/data-scenarios.js"></script>
+<script src="js/data-referentiels.js"></script>
+<script src="js/data-doctrine.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
