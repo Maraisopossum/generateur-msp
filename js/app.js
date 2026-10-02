@@ -10,7 +10,7 @@
   function setP(o, p, v) { const ks = p.split('.'); const last = ks.pop(); const t = ks.reduce((a, k) => a[k], o); t[last] = v; }
   const ed = (path, val, cls) => `<span class="ed ${cls || ''}" contenteditable="true" spellcheck="false" data-p="${path}">${esc(val)}</span>`;
   const edBlock = (path, val) => `<div class="ed block" contenteditable="true" spellcheck="false" data-p="${path}">${esc(val)}</div>`;
-  const delBtn = (arr, i) => `<button class="mini no-print" data-act="del" data-arr="${arr}" data-i="${i}" title="Supprimer" aria-label="Supprimer la ligne">×</button>`;
+  const delBtn = (arr, i) => `<button class="mini no-print" data-act="del" data-arr="${arr}" data-i="${i}" title="Supprimer" aria-label="Supprimer la ligne">[x]</button>`;
 
   /* ---------- routeur ---------- */
   function route() {
@@ -32,7 +32,7 @@
     let comps = '';
     if (e) {
       const count = draft.competences.length;
-      comps = `<section class="card"><h2><span class="step">2</span> Compétences à travailler <small>1 à 4, issues du ${esc(e.label)}</small></h2>
+      comps = `<section class="card"><h2><span class="step">[2]</span> Compétences à travailler <small>1 à 4, issues du ${esc(e.label)}</small></h2>
         <p class="hint">${count} sélectionnée(s). Choisis celles que tu veux voir en situation ; au-delà de 4, l'observateur ne suit plus.</p>
         ${e.domaines.map(d => `<details ${d.blocs.some(b => b.competences.some(c => draft.competences.includes(c.id))) ? 'open' : ''}><summary>${esc(d.label)}</summary>
           ${d.blocs.map(b => `<fieldset><legend>${esc(b.bloc)}</legend>${b.competences.map(c => `<label class="check"><input type="checkbox" data-comp="${c.id}" ${draft.competences.includes(c.id) ? 'checked' : ''}><span>${esc(c.label)}</span></label>`).join('')}</fieldset>`).join('')}</details>`).join('')}
@@ -43,15 +43,15 @@
     $app.innerHTML = `
       <section class="intro"><h1>Prépare une MSP en quelques clics</h1>
         <p>Choisis un emploi et des compétences : l'application assemble une fiche complète (scénario, rôles, sécurité, évènements, grille, débriefing) que tu peux modifier puis imprimer.</p></section>
-      <section class="card"><h2><span class="step">1</span> Emploi</h2>
-        <div class="emplois">${emplois.map(k => `<label class="emploi ${draft.emploi === k ? 'on' : ''}"><input type="radio" name="emploi" value="${k}" ${draft.emploi === k ? 'checked' : ''}><b>${esc(DATA.referentiels[k].label)}</b><small>${esc(DATA.referentiels[k].source)}</small></label>`).join('')}</div></section>
+      <section class="card"><h2><span class="step">[1]</span> Emploi</h2>
+        <div class="emplois">${emplois.map(k => `<label class="emploi ${draft.emploi === k ? 'on' : ''}"><input type="radio" name="emploi" value="${k}" ${draft.emploi === k ? 'checked' : ''}><b><span class="mk">${draft.emploi === k ? '[x]' : '[ ]'}</span> ${esc(DATA.referentiels[k].label)}</b><small>${esc(DATA.referentiels[k].source)}</small></label>`).join('')}</div></section>
       ${comps}
-      ${e ? `<section class="card"><h2><span class="step">3</span> Paramètres</h2>
+      ${e ? `<section class="card"><h2><span class="step">[3]</span> Paramètres</h2>
         <div class="grid">
           <div><div class="lab">Difficulté (ZPD)</div><div class="seg" role="radiogroup">${[[1, 'Découverte'], [2, 'Standard'], [3, 'Avancée']].map(([n, l]) => `<label class="${draft.niveau === n ? 'on' : ''}"><input type="radio" name="niveau" value="${n}" ${draft.niveau === n ? 'checked' : ''}>${l}</label>`).join('')}</div>
             <p class="hint">Plus c'est difficile, plus il y a de contraintes et d'évènements injectés.</p></div>
           <div><div class="lab">Nombre de stagiaires</div><div class="stepper"><button type="button" data-act="nb" data-d="-1" aria-label="Moins">−</button><output>${draft.nbApprenants}</output><button type="button" data-act="nb" data-d="1" aria-label="Plus">+</button></div></div>
-          <div><label class="switch"><input type="checkbox" id="evol" ${draft.evolutive ? 'checked' : ''}><span class="knob"></span><span>MSP évolutive<small>2 à 3 évènements injectés, chacun avec son déclencheur</small></span></label></div>
+          <div><label class="check"><input type="checkbox" id="evol" ${draft.evolutive ? 'checked' : ''}><span><b>MSP évolutive</b><small>2 à 3 évènements injectés, chacun avec son déclencheur</small></span></label></div>
         </div></section>
         <div class="actions"><button class="btn primary big" id="gen" ${draft.competences.length < 1 || draft.competences.length > 4 ? 'disabled' : ''}>Générer la MSP</button>
         ${draft.competences.length > 4 ? '<span class="warn">4 compétences maximum</span>' : ''}</div>` : ''}`;
@@ -97,30 +97,30 @@
         <section><h2>Site et moyens</h2>
           <p><b>Site :</b> ${ed('site', m.site)}</p>
           <ul class="list">${m.moyens.map((x, i) => `<li>${ed('moyens.' + i, x)}${delBtn('moyens', i)}</li>`).join('')}</ul>
-          <button class="mini add no-print" data-act="add" data-arr="moyens">+ moyen</button></section>
+          <button class="mini add no-print" data-act="add" data-arr="moyens">[+] moyen</button></section>
 
         <section><h2>Scénario</h2>
           <div class="kv"><b>Alerte</b>${edBlock('alerte', m.alerte)}</div>
           <div class="kv"><b>À l'arrivée</b>${edBlock('arrivee', m.arrivee)}</div>
           <div class="kv"><b>Évolution</b>${edBlock('evolution', m.evolution)}</div>
           ${m.contraintes.length ? `<div class="kv"><b>Contraintes</b><ul class="list">${m.contraintes.map((x, i) => `<li>${ed('contraintes.' + i, x)}${delBtn('contraintes', i)}</li>`).join('')}</ul></div>` : ''}
-          <button class="mini add no-print" data-act="add" data-arr="contraintes">+ contrainte</button></section>
+          <button class="mini add no-print" data-act="add" data-arr="contraintes">[+] contrainte</button></section>
 
         <section><h2>Rôles</h2>
           <table><thead><tr><th>Rôle</th><th>Mission</th><th class="no-print"></th></tr></thead><tbody>
           ${m.roles.map((r, i) => `<tr><td>${ed('roles.' + i + '.role', r.role)}</td><td>${edBlock('roles.' + i + '.mission', r.mission)}</td><td class="no-print">${delBtn('roles', i)}</td></tr>`).join('')}</tbody></table>
-          <button class="mini add no-print" data-act="add" data-arr="roles">+ rôle</button></section>
+          <button class="mini add no-print" data-act="add" data-arr="roles">[+] rôle</button></section>
 
         <section><h2>Sécurité et analyse de risques</h2>
           <table><thead><tr><th>Risque</th><th>Mesure</th><th class="no-print"></th></tr></thead><tbody>
           ${m.risques.map((r, i) => `<tr><td>${edBlock('risques.' + i + '.r', r.r)}</td><td>${edBlock('risques.' + i + '.m', r.m)}</td><td class="no-print">${delBtn('risques', i)}</td></tr>`).join('')}</tbody></table>
-          <button class="mini add no-print" data-act="add" data-arr="risques">+ risque</button></section>
+          <button class="mini add no-print" data-act="add" data-arr="risques">[+] risque</button></section>
 
         <section><h2>Évènements injectés</h2>
           ${m.injections.length ? `<table><thead><tr><th>Déclencheur</th><th>Évènement</th><th>Attendu de l'apprenant</th><th class="no-print"></th></tr></thead><tbody>
           ${m.injections.map((x, i) => `<tr><td>${edBlock('injections.' + i + '.t', x.t)}</td><td>${edBlock('injections.' + i + '.e', x.e)}</td><td>${edBlock('injections.' + i + '.a', x.a)}</td><td class="no-print">${delBtn('injections', i)}</td></tr>`).join('')}</tbody></table>` : '<p class="hint">Aucun évènement injecté à ce niveau. Ajoutes-en un si besoin.</p>'}
-          <button class="mini add no-print" data-act="add" data-arr="injections">+ évènement</button>
-          ${m.doctrine && (m.doctrine.ecueils.length || m.doctrine.situations.length) ? `<div class="ideas no-print"><h3>Pistes issues des guides GDO / GTO</h3><p class="hint">Écueils fréquents et situations types cités par les guides. Un clic les ajoute aux évènements.</p><ul class="list">${['ecueils', 'situations'].map(k => m.doctrine[k].map((x, i) => `<li>${esc(x.t)} <small>(${esc(x.src)}, p. ${esc(x.p)})</small> <button class="mini" data-act="idea" data-k="${k}" data-i="${i}">+ ajouter</button></li>`).join('')).join('')}</ul></div>` : ''}</section>
+          <button class="mini add no-print" data-act="add" data-arr="injections">[+] évènement</button>
+          ${m.doctrine && (m.doctrine.ecueils.length || m.doctrine.situations.length) ? `<div class="ideas no-print"><h3>Pistes issues des guides GDO / GTO</h3><p class="hint">Écueils fréquents et situations types cités par les guides. Un clic les ajoute aux évènements.</p><ul class="list">${['ecueils', 'situations'].map(k => m.doctrine[k].map((x, i) => `<li>${esc(x.t)} <small>(${esc(x.src)}, p. ${esc(x.p)})</small> <button class="mini" data-act="idea" data-k="${k}" data-i="${i}">[+] ajouter</button></li>`).join('')).join('')}</ul></div>` : ''}</section>
 
         <section><h2>Grille d'observation</h2>
           <p class="hint">Cotation : A acquise, ECA en cours d'acquisition, NA non acquise. À remplir avec des faits et des heures. La même grille sert à l'auto-évaluation du stagiaire.</p>
@@ -128,7 +128,7 @@
           ${m.grille.map(g => `<tr class="comp-row"><td colspan="5"><b>${esc(g.competence)}</b></td></tr>${g.savoirs.map(s => `<tr><td>${esc(s)}</td><td></td><td class="cot">☐</td><td class="cot">☐</td><td class="cot">☐</td></tr>`).join('')}`).join('')}</tbody></table>
           <h3>Indicateurs observables suggérés</h3>
           <ul class="list">${m.indicateurs.map((x, i) => `<li>${ed('indicateurs.' + i, x)}${delBtn('indicateurs', i)}</li>`).join('')}</ul>
-          <button class="mini add no-print" data-act="add" data-arr="indicateurs">+ indicateur</button></section>
+          <button class="mini add no-print" data-act="add" data-arr="indicateurs">[+] indicateur</button></section>
 
         <section><h2>Débriefing en 5 temps</h2>
           ${m.debrief.map((t, ti) => `<div class="temps"><b>${esc(t.temps)}</b><ul class="list">${t.questions.map((q, qi) => `<li>${ed('debrief.' + ti + '.questions.' + qi, q)}</li>`).join('')}</ul></div>`).join('')}
